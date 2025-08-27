@@ -1,11 +1,15 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import Home from './Home';
+import Header from "./Components/Header";
+import Footer from "./Components/Footer";
+import MainContent from "./Components/MainContent";
 
-import './styles/global.css';
-
-ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
-    <Home />
-  </React.StrictMode>
-);
+export default function App() {
+    return (
+        <div className="bg-gray-50 min-h-screen flex flex-col">
+            <Header />
+            <main className="flex-grow">
+                <MainContent />
+            </main>
+            <Footer />
+        </div>
+    )
+}
