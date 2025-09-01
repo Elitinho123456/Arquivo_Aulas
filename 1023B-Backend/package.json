@@ -1,10 +1,13 @@
 {
+  "$schema": "https://json.schemastore.org/package.json",
   "name": "1023b-backend",
   "version": "0.0.1",
   "main": "index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "tsx watch src/index.ts"
+    "dev": "tsx watch src/index.ts",
+    "start": "node dist/index.js",
+    "build": " npm i && tsc"
   },
   "type": "module",
   "author": "Elitinho",
