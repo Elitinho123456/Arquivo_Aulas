@@ -9,9 +9,11 @@ const localhsot = process.env.DB_HOST, user = process.env.DB_USER, password = pr
 app.get('/', async (req, res) => {
 
     if (localhsot === undefined || user === undefined || password === undefined || database === undefined || port === undefined) {
-        console.log('Variáveis de ambiente não encontradas')
-        return
-    }
+
+        console.log('Variáveis de ambiente não encontradas');
+        return;
+
+    };
 
     try {
 
@@ -21,17 +23,47 @@ app.get('/', async (req, res) => {
             password: password,
             database: database,
             port: Number(port)
-        })
+        });
 
-        res.send('Conectado ao banco de dados')
+        res.send('Conectado ao banco de dados');
 
     } catch (error) {
 
         res.status(500).send('Erro ao conectar ao banco de dados')
-        console.log(error)
-    }
-})
+        console.log(error);
+    };
+});
+
+app.get('/produtos', async (req, res) => {
+
+    if (localhsot === undefined || user === undefined || password === undefined || database === undefined || port === undefined) {
+
+        console.log('Variáveis de ambiente não encontradas');
+        return;
+
+    };
+
+    try {
+
+        const conn = await mysql.createConnection({
+            host: localhsot,
+            user: user,
+            password: password,
+            database: database,
+            port: Number(port)
+        });
+
+        const [rows] = await conn.query('SELECT * FROM produtos');
+
+        res.send(rows);
+
+    } catch (error) {
+
+        res.status(500).send('Erro ao buscar produtos')
+        console.log(error);
+    };
+});
 
 app.listen(8000, () => {
     console.log(`Server Iniciado, porta: 8000`)
-})
+});
