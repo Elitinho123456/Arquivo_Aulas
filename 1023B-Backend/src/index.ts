@@ -13,11 +13,7 @@ app.get('/', async (req, res) => {
         return
     }
 
-    console.log(localhsot, user, password, database, port)
-
     try {
-
-        let result;
 
         const conn = await mysql.createConnection({
             host: localhsot,
