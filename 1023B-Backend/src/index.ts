@@ -14,7 +14,7 @@ app.get('/', async (req, res) => {
     }
 
     try {
-        const connection = await mysql.createConnection({
+        const conn = await mysql.createConnection({
             host: localhsot,
             user: user,
             password: password,
@@ -22,6 +22,7 @@ app.get('/', async (req, res) => {
         })
 
         res.send('Conectado ao banco de dados')
+        conn.end()
     } catch (error) {
 
         res.status(500).send('Erro ao conectar ao banco de dados')
