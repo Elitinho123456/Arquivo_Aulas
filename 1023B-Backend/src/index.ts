@@ -57,6 +57,8 @@ app.get('/produtos', async (req, res) => {
 
         res.send(rows);
 
+        conn.end();
+
     } catch (error) {
 
         res.status(500).send('Erro ao buscar produtos')
