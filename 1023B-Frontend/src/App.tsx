@@ -23,6 +23,7 @@ export default function App() {
 
         const form = event.currentTarget;
         const formData = new FormData(form);
+        const data = Object.fromEntries(formData.entries());
 
 
         fetch('/api/produtos', {
@@ -30,7 +31,7 @@ export default function App() {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(formData)
+            body: JSON.stringify(data)
         })
             .then(response => response.json())
             .then(data => setProdutos([...produtos, data]))
