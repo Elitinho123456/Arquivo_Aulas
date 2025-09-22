@@ -8,19 +8,22 @@
     "dev": "tsx watch src/index.ts",
     "dev:mongo": "tsx watch src/index-mongo.ts",
     "start": "node dist/index-mongo.js",
-    "build": " npm i && tsc"
+    "build": " npm i && tsc",
+    "teste": "tsx src/rotas.ts"
   },
   "type": "module",
   "author": "Elitinho",
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "bcrypt": "^6.0.0",
     "dotenv": "^17.2.1",
     "express": "^5.1.0",
     "mongodb": "^6.19.0",
     "mysql2": "^3.14.3"
   },
   "devDependencies": {
+    "@types/bcrypt": "^6.0.0",
     "@types/express": "^5.0.3",
     "@types/mysql": "^2.15.27",
     "@types/node": "^24.3.0",

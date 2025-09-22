@@ -34,38 +34,6 @@ app.get('/', async (req, res) => {
     };
 });
 
-app.get('/produtos', async (req, res) => {
-
-    if (localhsot === undefined || user === undefined || password === undefined || database === undefined || port === undefined) {
-
-        console.log('Variáveis de ambiente não encontradas');
-        return;
-
-    };
-
-    try {
-
-        const conn = await mysql.createConnection({
-            host: localhsot,
-            user: user,
-            password: password,
-            database: database,
-            port: Number(port)
-        });
-
-        const [rows] = await conn.query('SELECT * FROM produtos');
-
-        res.send(rows);
-
-        conn.end();
-
-    } catch (error) {
-
-        res.status(500).send('Erro ao buscar produtos')
-        console.log(error);
-    };
-});
-
 app.listen(8000, () => {
     console.log(`Server Iniciado, porta: 8000`)
 });
