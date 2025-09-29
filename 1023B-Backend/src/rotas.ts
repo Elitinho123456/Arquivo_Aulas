@@ -22,5 +22,6 @@ router.delete('/produtos', ProdutosController.removeProduto);
 router.get('/users', UsersController.listaUsers);
 router.post('/users', UsersController.adicionaUser);
 router.delete('/users', UsersController.removeUser);
+router.post('/login', UsersController.loginUser);
 
 export default router;
