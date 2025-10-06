@@ -1,4 +1,5 @@
 import 'dotenv/config';
+import cors from 'cors';
 
 import express, { Request, Response } from 'express';
 import { MongoClient } from 'mongodb';
@@ -11,6 +12,7 @@ const db = client.db(process.env.MONGO_DB!);
 await client.connect();
 
 const app = express();
+app.use(cors());
 app.use(express.json());
 
 app.use(router);

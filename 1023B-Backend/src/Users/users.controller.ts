@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import db from "../DataBase/banco-mogo";
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import 'dotenv/config';
 
 class UsersController {
 
@@ -62,7 +63,13 @@ class UsersController {
 
             // (Opcional, mas recomendado) Gere um token JWT
             // A chave secreta deve vir de uma variável de ambiente (ex: process.env.JWT_SECRET)
-            const token = jwt.sign({ userId: user._id }, 'SEU_SEGREDO_JWT', { expiresIn: '1h' });
+            const secret = process.env.JWT;
+            if (!secret) {
+                console.error('JWT_SECRET não está definido');
+                return res.status(500).json({ message: 'Erro interno no servidor: Chave secreta não configurada.' });
+            }
+
+            const token = jwt.sign({ userId: user._id }, secret, { expiresIn: '1h' });
 
             // 4. Envie a resposta com o token e os dados do usuário
             return res.status(200).json({ ...userSemSenha, token });

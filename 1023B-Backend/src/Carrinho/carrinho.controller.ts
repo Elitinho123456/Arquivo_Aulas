@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import db from "../DataBase/banco-mogo";
+import bson, { ObjectId } from "bson";
 
 interface ItemCarrinho {
     produtoId: string;
@@ -19,12 +20,11 @@ class CarrinhoController {
 
     //adicionarItem
     async adicionarItem(req: Request, res: Response) {
-
         const { usuarioId, produtoId, quantidade } = req.body;
 
         try {
 
-            const produto = await db.collection("produtos").findOne({ _id: produtoId });
+            const produto = await db.collection("produtos").findOne({ _id:ObjectId.createFromHexString(produtoId) });
 
             if (!produto) return res.status(404).json({ message: "Produto não encontrado" });
 
@@ -67,9 +67,9 @@ class CarrinhoController {
             }
 
         } catch (error) {
-
+            console.log("Entrei no catch")
             console.log(error);
-            return res.status(500).json({ message: "Erro ao adicionar item ao carrinho" });
+            return res.status(500).json({ message: "Erro ao adicionar item ao carrinho"});
 
         }
     }
@@ -142,7 +142,7 @@ class CarrinhoController {
     //listar
     async listar(req: Request, res: Response) {
 
-        const { usuarioId } = req.body;
+        const { usuarioId } = req.query;
 
         try {
 
