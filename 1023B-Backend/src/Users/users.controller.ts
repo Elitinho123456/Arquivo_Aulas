@@ -23,9 +23,10 @@ class UsersController {
             return res.status(400).json({ message: 'Email inválido' });
         }
 
-        const result = await db.collection('users').insertOne(user);
+        // Hash da senha ANTES de inserir no banco
         const hash = await bcrypt.hash(senha, 10);
-        user.senha = hash;
+
+        const result = await db.collection('users').insertOne({ ...user, senha: hash });
         res.status(201).json({ nome, idade, email, _id: result.insertedId });
 
     }
@@ -33,6 +34,7 @@ class UsersController {
     // Adicione este novo método dentro da classe UsersController
 
     async loginUser(req: Request, res: Response) {
+        console.log('📧 Tentativa de login:', req.body.email);
         const { email, senha } = req.body;
 
         if (!email || !senha) {
@@ -48,21 +50,20 @@ class UsersController {
             }
 
             // 2. Compare a senha enviada com o hash salvo no banco
+            const isValidPassword = await bcrypt.compare(senha, user.senha);
 
-            if (!senha) {
+            if (!isValidPassword) {
                 return res.status(401).json({ message: 'Credenciais inválidas' });
             }
 
             // 3. Se a senha for válida, crie o objeto para enviar como resposta
-            // Este objeto contém o _id que você precisa!
             const userSemSenha = {
                 _id: user._id,
                 nome: user.nome,
                 email: user.email,
             };
 
-            // (Opcional, mas recomendado) Gere um token JWT
-            // A chave secreta deve vir de uma variável de ambiente (ex: process.env.JWT_SECRET)
+            // 4. Gere um token JWT
             const secret = process.env.JWT;
             if (!secret) {
                 console.error('JWT_SECRET não está definido');
@@ -71,7 +72,7 @@ class UsersController {
 
             const token = jwt.sign({ userId: user._id }, secret, { expiresIn: '1h' });
 
-            // 4. Envie a resposta com o token e os dados do usuário
+            // 5. Envie a resposta com o token e os dados do usuário
             return res.status(200).json({ ...userSemSenha, token });
 
         } catch (error) {

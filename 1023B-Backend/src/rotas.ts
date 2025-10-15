@@ -2,26 +2,35 @@ import { Router } from 'express';
 import CarrinhoController from './Carrinho/carrinho.controller';
 import ProdutosController from './Produtos/produtos.controller';
 import UsersController from './Users/users.controller';
+import authMiddleware from './middleware/auth';
 
 const router = Router();
 
-//Rotas do produtos
-router.get('/produtos', ProdutosController.listaProdutos);
-router.post('/produtos', ProdutosController.adicionaProduto);
-router.delete('/produtos', ProdutosController.removeProduto)
-router.put('/produtos', ProdutosController.atualizarProduto);
+// Public routes (no authentication required)
 
-//Rotas do users
-router.get('/users', UsersController.listaUsers);
+// Product routes - public for browsing
+router.get('/produtos', ProdutosController.listaProdutos);
+
+// User routes - public for registration and login
 router.post('/users', UsersController.adicionaUser);
-router.delete('/users', UsersController.removeUser);
 router.post('/login', UsersController.loginUser);
 
-router.get('/carrinho', CarrinhoController.listar);
-router.post('/carrinho', CarrinhoController.adicionarItem);
-router.delete('/carrinho/item', CarrinhoController.removeItem);
-router.put('/carrinho', CarrinhoController.atualizarQuantidade);
-router.delete('/carrinho', CarrinhoController.remover);
+// Protected routes (authentication required)
 
+// Product management routes - only for admins
+router.post('/produtos', authMiddleware, ProdutosController.adicionaProduto);
+router.delete('/produtos', authMiddleware, ProdutosController.removeProduto);
+router.put('/produtos', authMiddleware, ProdutosController.atualizarProduto);
+
+// User management routes - only for authenticated users
+router.get('/users', authMiddleware, UsersController.listaUsers);
+router.delete('/users', authMiddleware, UsersController.removeUser);
+
+// Cart routes - only for authenticated users
+router.get('/carrinho', authMiddleware, CarrinhoController.listar);
+router.post('/carrinho', authMiddleware, CarrinhoController.adicionarItem);
+router.delete('/carrinho/item', authMiddleware, CarrinhoController.removeItem);
+router.put('/carrinho', authMiddleware, CarrinhoController.atualizarQuantidade);
+router.delete('/carrinho', authMiddleware, CarrinhoController.remover);
 
 export default router;

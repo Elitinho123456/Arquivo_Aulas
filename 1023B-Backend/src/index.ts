@@ -1,39 +1,48 @@
 import 'dotenv/config';
-
 import express from 'express';
-import mysql from 'mysql2/promise';
+import cors from 'cors';
+import router from './rotas';
+import authMiddleware from './middleware/auth';
 
 const app = express();
-const localhsot = process.env.DB_HOST, user = process.env.DB_USER, password = process.env.DB_PASSWORD, database = process.env.DB_DATABASE, port = process.env.DB_PORT
 
-app.get('/', async (req, res) => {
+// Middleware
+app.use(cors());
+app.use(express.json());
 
-    if (localhsot === undefined || user === undefined || password === undefined || database === undefined || port === undefined) {
+// Public routes (no authentication required)
+app.use('/api', router);
 
-        console.log('Variáveis de ambiente não encontradas');
-        return;
+// Protected routes (authentication required)
+// You can add more protected routes here as needed
+// app.use('/api/protected', authMiddleware, protectedRouter);
 
-    };
-
-    try {
-
-        const conn = await mysql.createConnection({
-            host: localhsot,
-            user: user,
-            password: password,
-            database: database,
-            port: Number(port)
-        });
-
-        res.send('Conectado ao banco de dados');
-
-    } catch (error) {
-
-        res.status(500).send('Erro ao conectar ao banco de dados')
-        console.log(error);
-    };
+// Health check endpoint
+app.get('/', (req, res) => {
+    res.json({
+        message: 'ShopOnline API is running!',
+        version: '1.0.0',
+        status: 'healthy'
+    });
 });
 
-app.listen(8000, () => {
-    console.log(`Server Iniciado, porta: 8000`)
+// 404 handler
+app.use('*', (req, res) => {
+    res.status(404).json({ message: 'Endpoint não encontrado' });
 });
+
+// Error handler
+app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+    console.error(err.stack);
+    res.status(500).json({ message: 'Erro interno do servidor' });
+});
+
+const PORT = process.env.PORT || 8000;
+
+app.listen(PORT, () => {
+    console.log(`🚀 Server iniciado na porta ${PORT}`);
+    console.log(`📡 API disponível em http://localhost:${PORT}`);
+    console.log(`🔗 Health check: http://localhost:${PORT}/`);
+});
+
+export default app;

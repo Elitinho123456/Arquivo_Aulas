@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import db from "../DataBase/banco-mogo";
+import { ObjectId } from 'mongodb';
 
 class ProdutosController {
 
@@ -20,7 +21,15 @@ class ProdutosController {
         const { produtoId } = req.body;
 
         try {
-            const result = await db.collection('produtos').deleteOne({ _id: produtoId });
+            // Converte para ObjectId se necessário
+            let objectId;
+            if (typeof produtoId === 'string') {
+                objectId = new ObjectId(produtoId);
+            } else {
+                objectId = produtoId;
+            }
+
+            const result = await db.collection('produtos').deleteOne({ _id: objectId });
             if (result.deletedCount === 0) return res.status(404).json({ message: 'Produto não encontrado' });
             return res.status(200).json({ message: 'Produto removido com sucesso' });
         } catch (error) {
@@ -41,7 +50,15 @@ class ProdutosController {
         const produto = { nome, preco, descricao, quantidade, imagem: imagem || "https://placehold.co/150" };
 
         try {
-            const result = await db.collection('produtos').updateOne({ _id: produtoId }, { $set: produto });
+            // Converte para ObjectId se necessário
+            let objectId;
+            if (typeof produtoId === 'string') {
+                objectId = new ObjectId(produtoId);
+            } else {
+                objectId = produtoId;
+            }
+
+            const result = await db.collection('produtos').updateOne({ _id: objectId }, { $set: produto });
             if (result.modifiedCount === 0) return res.status(404).json({ message: 'Produto não encontrado' });
             return res.status(200).json({ message: 'Produto atualizado com sucesso' });
         } catch (error) {
